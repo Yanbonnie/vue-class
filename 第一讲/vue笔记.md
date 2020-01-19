@@ -224,16 +224,415 @@ var vm = new Vue({
 * ```
   .right
   ```
-
-```
-<input type="text" @keydown.enter="keyboardHandle">
-<input type="text" @keydown.13="keyboardHandle">
-keyboardHandle:function(e){
-   console.log(e)
-}
-```
+  
 
 #### 表单输入绑定
 
+## vue-cli
 
+https://cli.vuejs.org/zh/
+
+安装
+
+```
+npm install -g @vue/cli
+```
+
+创建一个项目
+
+```
+vue create my-project
+```
+
+项目创建好的目录结构
+
+![alt](.\imgs\vue-cli.jpg)
+
+## vue-router
+
+https://router.vuejs.org/zh/
+
+```
+vue add vue-router
+```
+
+####  路由对象实例
+
+```javascript
+//router/index.js
+export default new Router({
+    mode:'history',   //模式：hash | history
+    base:process.env.BASE_URL,  //http://localhost:8080/vue
+    routes:[{
+        path:'/',
+        name:'home',
+        component:Home
+    },{
+        path:'/about',
+        name:'about',
+        // 路由级代码分割，生成分片（about.[hash].js）
+        // 当访问路由时会懒加载
+        component:()=>import(/* webpackChunkName: "about" */ './views/About.vue')
+    }
+   ]
+})
+```
+
+#### 指定路由器
+
+```
+//main.js
+new Vue({
+  router,
+  render: h => h(App)
+}).$mount('#app')
+```
+
+#### 路由视图
+
+```
+<router-view/>
+```
+
+#### 导航链接
+
+```
+<router-link to="/">Home</router-link>
+<router-link to="/about">About</router-link>
+```
+
+#### 路由嵌套
+
+应用界面通常由多层嵌套的组件组合而成。同样的，URL中各段动态路径也按某种结构对应嵌套的各层组件。
+
+	1. 创建List.vue并移动商品列表部分内容
+ 2. 配置路由  router/index.js
+
+```
+{
+	path:'/',
+	component:Home,
+	children:[{
+		path:'list',
+		name:'list',
+		component:List
+	}]
+}
+```
+
+3. 添加路由插槽  Home.vue
+
+```
+<template>
+	<div class="home">
+		<h1>首页</h1>
+		<router-view></router-view>
+	</div>
+</template>
+```
+
+#### 动态路由
+
+	1. 创建Detail.vue
+
+```
+<template>
+	<div>
+		<h2>商品详情</h2>
+		<p>{{$route.params.id}}</p>
+	</div>
+</template>
+```
+
+​	2. 详情页路由配置  router/index.js
+
+```
+{
+	path:'/',
+	component:Home,
+	children:[
+		{
+			path:'',
+			name:'home',
+			component:List
+		},
+		{
+			path:'detail/:id',
+			component:Detail
+		}
+	]
+}
+```
+
+	3. 跳转， List.vue
+
+```
+<ul>
+	<li><router-link to="/detail/1">详情1</router-link></li>
+	<li><router-link to="/detail/2">详情2</router-link></li>
+</ul>
+```
+
+>传递路由组件参数：
+>
+>```
+>{ path:"detail/:id",component:Detail,props:true}
+>```
+>
+>组建中以属性方式获取：
+>
+>```
+>export default { props:['id'] }
+>
+>export default {
+>	props: {
+>		id: {
+>			type:String,
+>			default:''
+>		}
+>	}
+>}
+>```
+>
+>可以有效解耦，增强组件通用性
+
+#### 路由守卫
+
+路由导航过程中有若干生命周期钩子，可以在这里实现逻辑控制。
+
+##### 全局守卫  
+
+```
+router/index.js
+const router = new Router({
+    mode:'history',   //模式：hash | history
+    base:process.env.BASE_URL,  //http://localhost:8080/vue
+    routes:[{
+        path:'/',
+        name:'home',
+        component:Home
+    },{
+        path:'/about',
+        name:'about',
+        meta:{
+        	auth: true,    //需要登录才可访问
+        },
+        // 路由级代码分割，生成分片（about.[hash].js）
+        // 当访问路由时会懒加载
+        component:()=>import(/* webpackChunkName: "about" */ './views/About.vue')
+    }
+   ]
+})
+router.beforeEach((to,from,next) => {
+	if(to.meta.auth &&  !window.isLogin){
+		if(window.confirm("请登录")){
+			window.isLogin = true;
+			next();     //登录成功，请继续
+		}else{
+			next('/');  //放弃登录，回首页
+		}
+	}else{
+		next();         //不需要登录，继续
+	}
+})
+export default router
+```
+
+##### 组件内的守卫
+
+```
+export default{
+	beforeRouteEnter(to,from,next){},
+	beforeRouteUpdate(to,from,next){},
+	beforeRouteLeave(to,from,next){}
+}
+```
+
+#### vue-router扩展
+
+##### 动态路由
+
+利用$router.addRoutes()可以实现动态路由添加，常用于用户权限控制
+
+```
+// router/index.js
+//返回数据可能是这样子的
+// [{ path: '/', name:'home', component:'Home'}]
+
+//异步获取路由
+api.getRoutes().then(routes=>{
+	const routeConfig = routes.map(route => mapComponent(route));
+	router.addRoutes(routeConfig);
+})
+
+//映射关系
+const comMap = {
+	'Home': () => import('./view/Home.vue')
+}
+
+//递归替换
+function mapComponent(route){
+	route.component = compMap[route.component];
+	if(route.children){
+		route.children = route.children.map(child => mapComponent(child))
+	}
+	return route
+}
+```
+
+##### 面包屑
+
+利用$route.matched可得到路由匹配数组，按顺序解析可得到路由层次关系。
+
+```
+watch:{
+	$route(){
+		console.log(this.$route.matched);
+		this.crumbData = this.$route.matched.map(m => {name:m.name,path:m.path})
+	}
+}
+```
+
+## vuex
+
+#### 安装  
+
+ https://vuex.vuejs.org/zh/
+
+```
+vue add vuex
+```
+
+#### 核心概念
+
+* state 状态，数据
+* mutations 更改状态的函数
+* actions 异步操作
+* getters  状态数据的衍生变量
+* store 包含以上概念的容器
+
+#### 状态和状态变更
+
+state 保存数据状态，mutations用于修改状态，store/index.js
+
+```
+export default new Vuex.Store({
+	state:{ count: 0 },
+	mutations:{
+		add(state, n=1 ){
+			state.count += n
+		}
+	}
+})
+```
+
+使用状态， vuex/index.vue
+
+```
+<template>
+	<div>
+		<div>{{$store.getters.score}}</div>
+		<div>{{$store.state.count}}</div>
+		<button @click="add">增加</button>
+	</div>
+</template>
+export default{
+	methods:{
+		add(){
+			//提交mutations
+			this.$store.commit('add',2)
+			//提交actions
+			this.$store.dispatch('addAsync',2)
+		}
+	}
+}
+```
+
+#### 派生状态-getters
+
+从state派生出新的状态
+
+```
+export default new Vuex.Store({
+	getters:{
+		score(state){
+			return `我是派生出来的变量：${state.count}`
+		}
+	}
+})
+```
+
+#### 异步操作-actions
+
+复杂的业务逻辑，类似于controller
+
+```
+export default new Vuex.Store({
+	actions:{
+		addAsync({commit}){
+			setTimeOut(()=>{
+				commit('add',3)
+			},1000)
+		}
+	}
+})
+```
+
+#### 模块化
+
+按模块的方式编写代码  store/index.js
+
+```
+const count = {
+	namespaced:true,
+	state:{ count: 0 },
+	mutations:{
+		add(state, n=1 ){
+			state.count += n
+		}
+	},
+	getters:{
+		score(state){
+			return `我是派生出来的变量：${state.count}`
+		}
+	},
+	actions:{
+		addAsync({commit},{n}){
+			setTimeOut(()=>{
+				commit('add',n)
+			},1000)
+		}
+	}
+};
+export default new Vuex.Store({
+	modules:{
+		a : count
+	}
+})
+```
+
+使用，  components/vuex/module.vue
+
+```
+<template>
+	<div>
+		<div>{{$store.getters['a/score']}}</div>
+		<div>{{$store.state.a.count}}</div>
+		<button @click="add">增加</button>
+		<button @click="addAsync">增加Async</button>
+	</div>
+</template>
+export default{
+	methods:{
+		add(){
+			this.$store.commit('a/add');
+		},
+		addAsync(){
+			this.$store.dispatch('a/addAsync',{
+				n : 5
+			})
+		}
+	}
+}
+```
 
