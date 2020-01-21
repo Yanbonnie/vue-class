@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="./js/vue.js"></script>
+    <style>
+        body{
+            padding-bottom: 100px;
+        }
+        .title {
+            background-color: #ccc;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <p class="title">单行文本</p>
+        <input v-model="message" placeholder="edit me">
+        <p>Message is: {{ message }}</p>
+
+        <p class="title">多行文本</p>
+        <span>Multiline message is:</span>
+        <p style="white-space: pre-line;">{{ message }}</p>
+        <br>
+        <textarea v-model="message" placeholder="add multiple lines"></textarea>
+
+        <p class="title">单个复选框</p>
+        <input type="checkbox" id="checkbox" v-model="checked">
+        <label for="checkbox">{{ checked }}</label>
+
+        <p class="title">多个复选框</p>
+        <div id='example-3'>
+            <input type="checkbox" id="jack" value="Jack" v-model="checkedNames">
+            <label for="jack">Jack</label>
+            <input type="checkbox" id="john" value="John" v-model="checkedNames">
+            <label for="john">John</label>
+            <input type="checkbox" id="mike" value="Mike" v-model="checkedNames">
+            <label for="mike">Mike</label>
+            <br>
+            <span>Checked names: {{ checkedNames }}</span>
+        </div>
+
+        <p class="title">单选按钮</p>
+        <div id="example-4">
+            <input type="radio" id="one" value="One" v-model="picked">
+            <label for="one">One</label>
+            <br>
+            <input type="radio" id="two" value="Two" v-model="picked">
+            <label for="two">Two</label>
+            <br>
+            <span>Picked: {{ picked }}</span>
+        </div>
+
+        <p class="title">选择框</p>
+        <div id="example-5">
+            <select v-model="selected">
+                <option disabled value="">请选择</option>
+                <option>A</option>
+                <option>B</option>
+                <option>C</option>
+            </select>
+            <span>Selected: {{ selected }}</span>
+        </div>
+
+        <p class="title">选择框（值绑定）</p>
+        <div id="example-6">
+            <select v-model="selectedValue">
+                <option disabled value="">请选择</option>
+                <option value="第一项">A</option>
+                <option value="第二项">B</option>
+                <option value="第三项">C</option>
+            </select>
+            <span>Selected: {{ selectedValue }}</span>
+        </div>
+
+        <p class="title">修饰符</p>
+        <input v-model.lazy="msg"  placeholder=".lazy">
+        <p>{{msg}}</p>
+
+        <input v-model.number="age" type="number" @keyup.enter="showNum" placeholder=".number">
+
+        <input v-model.trim="trimMsg" placeholder=".trim">
+        <p>{{trimMsg}}</p>
+    </div>
+    <script>
+        var vm = new Vue({
+            el: '#app',
+            data: function () {
+                return {
+                    message: '',
+                    checked: true,
+                    checkedNames: ['Jack'],
+                    picked: '',
+                    pick: '',
+                    selected: '',
+                    selectedValue: '',
+                    msg:'',
+                    age:'',
+                    trimMsg:''
+                }
+            },
+            methods:{
+                showNum(){
+                    console.log(this.age)
+                    console.log(typeof this.age)
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>

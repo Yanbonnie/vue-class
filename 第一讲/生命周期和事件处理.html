@@ -5,18 +5,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="./js/vue.js"></script>
     <title>Document</title>
 </head>
 
 <body>
     <div id="app">
         <div>{{count}}</div>
-        <div style="padding:10px;background:red;" @click="isSelfHandle">
+        <div style="padding:10px;background:red;" @click.self="isSelfHandle">
             <p>11111111111</p>
         </div>
         <button v-on:click="add">加1</button>
-        <input type="text" @keydown.up="keyboardHandle">
+        <input type="text" @keydown.enter="keyboardHandle">
     </div>
     <script>
         // Vue.config.keyCodes['1'] = 49;

@@ -68,6 +68,75 @@ var vm = new Vue({
 
 > 所有的生命周期钩子自动绑定 `this` 上下文到实例中，因此你可以访问数据，对属性和方法进行运算。这意味着你不能使用箭头函数来定义一个生命周期方法。
 
+### Class 与 Style 绑定
+
+#### 绑定class
+
+##### 对象语法
+
+```
+<div
+  class="static"
+  v-bind:class="{ active: isActive, 'text-danger': hasError }"
+></div>
+
+data: {
+  isActive: true,
+  hasError: false
+}
+```
+
+##### 数组语法
+
+```
+<div v-bind:class="[activeClass, errorClass]"></div>
+//根据条件切换class
+<div v-bind:class="[isActive ? 'active' : '', errorClass]"></div> 
+等价于
+<div v-bind:class="[{ active: isActive }, errorClass]"></div>
+
+data: {
+  activeClass: 'active',
+  errorClass: 'text-danger'
+}
+```
+
+#### 绑定内联样式
+
+```
+<div v-bind:style="{ color: activeColor, fontSize: fontSize + 'px' }"></div>
+
+data: {
+  activeColor: 'red',
+  fontSize: 30
+}
+
+等价于
+
+<div v-bind:style="styleObject"></div>
+data: {
+  styleObject: {
+    color: 'red',
+    fontSize: '30px'
+  }
+}
+
+等价于
+<div v-bind:style="[baseStyles, overridingStyles]">内联样式绑定</div>
+data: function () {
+    return {
+        baseStyles:{
+        	'color':"red"
+        },
+        overridingStyles:{
+        	"font-size": '30px'
+        }
+    }
+}
+```
+
+
+
 ### 条件渲染 
 
 >[ v-if / v-else-if / v-else  | v-show]
@@ -226,13 +295,335 @@ var vm = new Vue({
   ```
   
 
-#### 表单输入绑定
+### 表单输入绑定
+
+#### 文本
+
+```
+<input v-model="message" placeholder="edit me">
+<p>Message is: {{ message }}</p>
+```
+
+#### 多行文本
+
+```
+<span>Multiline message is:</span>
+<p style="white-space: pre-line;">{{ message }}</p>
+<br>
+<textarea v-model="message" placeholder="add multiple lines"></textarea>
+```
+
+#### 复选框
+
+##### 单个复选框
+
+```
+<input type="checkbox" id="checkbox" v-model="checked">
+<label for="checkbox">{{ checked }}</label>
+```
+
+##### 多个复选框
+
+```
+<div id='example-3'>
+  <input type="checkbox" id="jack" value="Jack" v-model="checkedNames">
+  <label for="jack">Jack</label>
+  <input type="checkbox" id="john" value="John" v-model="checkedNames">
+  <label for="john">John</label>
+  <input type="checkbox" id="mike" value="Mike" v-model="checkedNames">
+  <label for="mike">Mike</label>
+  <br>
+  <span>Checked names: {{ checkedNames }}</span>
+</div>
+```
+
+#### 单选按钮
+
+```
+<div id="example-4">
+  <input type="radio" id="one" value="One" v-model="picked">
+  <label for="one">One</label>
+  <br>
+  <input type="radio" id="two" value="Two" v-model="picked">
+  <label for="two">Two</label>
+  <br>
+  <span>Picked: {{ picked }}</span>
+</div>
+
+```
+
+#### 选择框
+
+```
+<div id="example-5">
+  <select v-model="selected">
+    <option disabled value="">请选择</option>
+    <option>A</option>
+    <option>B</option>
+    <option>C</option>
+  </select>
+  <span>Selected: {{ selected }}</span>
+</div>
+
+//值绑定
+<div id="example-6">
+	<select v-model="selectedValue">
+        <option disabled value="">请选择</option>
+        <option value="第一项">A</option>
+        <option value="第二项">B</option>
+        <option value="第三项">C</option>
+	</select>
+	<span>Selected: {{ selectedValue }}</span>
+</div>
+
+
+```
+
+#### 修饰符
+
+```
+.lazy
+<!-- 在“change”时而非“input”时更新 -->
+<input v-model.lazy="msg" >
+
+.number
+<input v-model.number="age" type="number">
+
+.trim
+<input v-model.trim="msg">
+```
+
+### vue组件
+
+#### count组件
+
+```
+<body>
+    <div id="app">
+        {{total}}
+        <div>
+            <button-counter @change-total="addTotal" :add-num="10" />
+            <!--注意传值要用烤串命名方式-->
+        </div>
+        <p>------------------</p>
+        <div>
+            <button-counter @change-total="addTotal" :add-num="2" />
+        </div>
+    </div>
+    <script>
+        var vm = new Vue({
+            el: '#app',
+            data: function () {
+                return {
+                    total: 0,
+                }
+            },
+            methods: {
+                addTotal(value) {
+                    this.total = this.total + value
+                }
+            },
+            mounted() {
+                // eventBus.$on('parent-change', function (value) {
+                //     console.log(value)
+                // })
+            }
+        })
+    </script>
+</body>
+```
+
+component.js
+
+```
+// 定义一个名为 button-counter 的新组件
+
+
+var eventBus = new Vue();   //事件总线程方式实现组件之间的通信
+
+
+// 父组件
+Vue.component('button-counter', {
+    props: {
+        addNum: {    //接收要用驼峰方式
+            type: Number,
+            default: 2
+        }
+    },
+    data: function () {
+        return {
+            count: 0
+        }
+    },
+    template: `
+    <div>
+        <p>我是count组件</p>
+        <p>当前的count的值为{{count}}</p>
+        <button @click="addCount">You clicked me {{ addNum }} times.</button>
+        <button-child :count="count"/>
+    </div>
+    `,
+    methods:{
+        addCount(){
+            this.count = this.count + this.addNum;
+            //父子组件通信
+            this.$emit('change-total',this.addNum);   //注意，这里不能用驼峰方式
+            eventBus.$emit('parent-change',this.addNum)
+        },
+    },
+    mounted() {
+    }
+})
+
+
+//子组件
+Vue.component('button-child',{
+    props:{
+        count:{
+            type:Number,
+            default:0
+        }
+    },
+    template:`
+        <div>
+            <p>我是子组件</p>
+            <p>我是button-counter传入的值{{count}}</p>
+        </div>
+    `,
+    mounted(){
+        eventBus.$on('parent-change',function(value){
+            console.log(value)
+        })
+    }
+})
+```
+
+#### 插槽
+
+```
+<button-counter @change-total="addTotal" :add-num="10" >
+    <h3>我是要进入插槽的内容</h3>
+    <div slot="other">
+    	<p>我是有名字的插槽</p>
+    </div>
+</button-counter>
+```
+
+```
+// 父组件
+Vue.component('button-counter', {
+    props: {
+        addNum: {    //接收要用驼峰方式
+            type: Number,
+            default: 2
+        }
+    },
+    data: function () {
+        return {
+            count: 0
+        }
+    },
+    template: `
+    <div>
+        <p>我是count组件</p>
+        <p>当前的count的值为{{count}}</p>
+        <button @click="addCount">You clicked me {{ addNum }} times.</button>
+        <slot name="other"></slot>
+        <slot></slot>
+        <button-child :count="count"/>
+    </div>
+    `,
+    methods:{
+        addCount(){
+            this.count = this.count + this.addNum;
+            //父子组件通信
+            this.$emit('change-total',this.addNum);   //注意，这里不能用驼峰方式
+            eventBus.$emit('parent-change',this.addNum)
+        },
+    },
+    mounted() {
+    }
+})
+```
+
+#### 局部组件
+
+```
+<body>
+    <div id="app">
+        {{total}}
+
+        <button-counter2 :add-num="10" @change-total="addTotal"/>  
+    </div>
+   
+    <script>
+         console.log(buttonCounter2)
+        var vm = new Vue({
+            el: '#app',
+            data: function () {
+                return {
+                    total: 0,
+                }
+            },
+            methods: {
+                addTotal(value) {
+                    this.total = this.total + value
+                }
+            },
+            components:{
+                'button-counter2': buttonCounter2
+            }
+        })
+    </script>
+</body>
+```
+
+
+
+```
+var buttonCounter2 =  {
+    props: {
+        addNum: {    //接收要用驼峰方式
+            type: Number,
+            default: 2
+        }
+    },
+    data: function () {
+        return {
+            count: 0
+        }
+    },
+    template: `
+    <div>
+        <p>我是count组件</p>
+        <p>当前的count的值为{{count}}</p>
+        <button @click="addCount">You clicked me {{ addNum }} times.</button>
+        <slot name="other"></slot>
+        <slot></slot>
+        <button-child :count="count"/>
+    </div>
+    `,
+    methods:{
+        addCount(){
+            this.count = this.count + this.addNum;
+            //父子组件通信
+            this.$emit('change-total',this.addNum);   //注意，这里不能用驼峰方式
+        },
+    },
+    mounted() {
+    }
+}
+```
+
+
 
 ## vue-cli
 
 https://cli.vuejs.org/zh/
 
-安装
+> Node 版本要求
+>
+> Vue CLI 需要 [Node.js](https://nodejs.org/) 8.9 或更高版本 (推荐 8.11.0+)。
 
 ```
 npm install -g @vue/cli

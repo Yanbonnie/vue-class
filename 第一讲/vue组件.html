@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="./js/vue.js"></script>
+    <script src="./js/com.js"></script>
+    <script src="./js/component.js"></script>
+    <style>
+        body {
+            padding-bottom: 100px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <div v-bind:style="[baseStyles, overridingStyles]">内联样式绑定</div>
+        {{total}}
+        <!-- <div>
+            <button-counter @change-total="addTotal" :add-num="10" >
+                <h3 >我是要进入插槽的内容</h3>
+                <div slot="other">
+                    <p>我是有名字的插槽</p>
+                </div>
+            </button-counter>
+        </div> -->
+
+        <button-counter2 :add-num="10" @change-total="addTotal"/>  
+    </div>
+   
+    <script>
+         console.log(buttonCounter2)
+        var vm = new Vue({
+            el: '#app',
+            data: function () {
+                return {
+                    total: 0,
+                    baseStyles:{
+                        'color':"red"
+                    },
+                    overridingStyles:{
+                        "font-size": '30px'
+                    }
+                }
+            },
+            methods: {
+                addTotal(value) {
+                    this.total = this.total + value
+                }
+            },
+            components:{
+                'button-counter2': buttonCounter2
+            },
+            mounted() {
+                // eventBus.$on('parent-change', function (value) {
+                //     console.log(value)
+                // })
+            }
+        })
+    </script>
+</body>
+
+</html>
