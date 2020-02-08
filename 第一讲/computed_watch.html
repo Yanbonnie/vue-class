@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>购物车</title>
+    <script src="./js/vue.js"></script>
+    <style>
+        body{
+            padding:50px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <ul>
+            <li v-for="item in list">{{item.name}}(¥{{item.price}})
+                <button @click="addCard(item)">加入购物车</button>
+            </li>
+        </ul>
+
+        <br>
+        <h2>购物车</h2>
+        <ul v-if="cartList.length > 0 ">
+            <li v-for="item in cartList">
+                {{item.name}} 单价：(¥{{item.price}}) 数量：{{item.count}} 
+                <button @click="operCart('reduce',item)"> 减</button>
+                <button @click="operCart('add',item)">加</button>
+            </li>
+            <div>
+                总价：{{total}}
+            </div>
+        </ul>
+    </div>
+    <script>
+        var vm = new Vue({
+            el: '#app',
+            data: function () {
+                return {
+                    list:[{
+                        id:1,
+                        name:'javascript',
+                        price:80
+                    },{
+                        id:2,
+                        name:'java',
+                        price:100
+                    }],
+                    cartList:[],
+                    total:0
+                }
+            },
+            // computed:{
+            //     total(){
+            //         let { cartList } = this;
+            //         let total  = 0;
+            //         cartList.forEach(item => {
+            //             total = total + (item.price * item.count)
+            //         });
+            //         return total
+            //     }
+            // },
+            watch:{
+                cartList:{
+                    handler(newVal,oldVal){
+                        let cartList  = newVal;
+                        let total  = 0;
+                        cartList.forEach(item => {
+                            total = total + (item.price * item.count)
+                        });
+                        this.total = total
+                    },
+                    deep:true
+                }
+            },
+            methods:{
+                //添加购物车
+                addCard(item){
+                    let { cartList } = this;
+                    let findIndex = cartList.findIndex(fItem=>{
+                        return fItem.id === item.id
+                    })
+                    if(findIndex !== -1){
+                        cartList[findIndex].count = cartList[findIndex].count + 1;
+                    }else{
+                        cartList.push({
+                            count:1,
+                            ...item
+                        })
+                    }
+                },
+                //操作购物车
+                operCart(type,item){
+                    let { cartList } = this;
+                    let dis = 1; 
+                    if(type==='reduce'){
+                        dis = -1;
+                    }
+                    let findIndex = cartList.findIndex(fItem=>fItem.id === item.id)
+                    if(findIndex > -1){
+                        cartList[findIndex].count = cartList[findIndex].count+dis;
+                        if(cartList[findIndex].count === 0){
+                            cartList.splice(findIndex,1)
+                        } 
+                    }
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>
