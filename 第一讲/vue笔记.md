@@ -1027,3 +1027,65 @@ export default{
 }
 ```
 
+## Nuxt.js
+
+Nuxt.js 是一个基于 Vue.js 的通用应用框架。
+
+#### 安装和启动
+
+确保安装了npx（npx在NPM版本5.2.0默认安装了）：npm -v  查询npm版本
+
+```
+1.npx create-nuxt-app b2b-mobile-nuxt
+
+2.cd b2b-mobile-nuxt
+
+3.npm install
+
+4.npm run dev
+```
+
+#### 别名
+
+～ 或 @
+
+>模板中, 如果需要引入 `assets` 或者 `static` 目录, 使用 `~/assets/your_image.png` 和 `~/static/your_image.png`方式。
+
+#### ui框架
+
+[轻量可靠的移动端Vue框架vant](https://youzan.github.io/vant/#/zh-CN/)
+
+1.安装：npm i vant -S
+
+2.导入所有组件 新建文件 plugins/vant.js
+
+```
+import Vue from 'vue';
+import Vant from 'vant';
+import 'vant/lib/index.css';
+
+Vue.use(Vant);
+```
+
+3.nuxt.config.js配置插件
+
+```
+plugins: [
+    "~/plugins/vant.js"
+],
+```
+
+####  路由
+
+导航
+
+添加路由导航，layouts/nav-footer.vue
+
+```
+<nuxt-link tag="li" to="/">
+   <van-icon name="wap-home-o" :color="navActive === 0 ? '#E3324C' : ''" />首页
+</nuxt-link>
+```
+
+
+
