@@ -1077,7 +1077,39 @@ plugins: [
 
 ####  路由
 
-导航
+>在pages文件夹新建vue文件，会自动生成路由配置
+
+##### 基础路由
+
+```
+pages/index.vue   -> /
+pages/find.vue    -> /find
+pages/order.vue   -> /order
+pages/member/index.vue   ->/member/
+```
+
+##### 动态路由
+
+>新建带下划线名称带vue文件，即可生成动态路由 即 pages/travel/detail/_id.vue
+
+```
+pages/detail/xxx
+```
+
+路由参数校验
+
+```
+validate ({ params }) {   
+	// 必须是number类型    
+	return /^\d+$/.test(params.id)  
+}
+```
+
+##### 嵌套路由
+
+
+
+##### 导航
 
 添加路由导航，layouts/nav-footer.vue
 
@@ -1087,5 +1119,27 @@ plugins: [
 </nuxt-link>
 ```
 
+>禁用预加载行为<nuxt-link tag="li" to="/" no-prefetch>page not per-fected</nuxt-link>
 
+>注意：store中的state 的返回对象要用（）包裹起来，不然初始值会有问题
+>
+>设置了keep-alive之后，第二次渲染组件不会重新走mounted
+
+### Nuxt.js  spa方式
+
+* nuxt.config.js    mode -> spa
+
+* plugins/api.js  生产环境的请求配置需要修改一下
+
+* nuxtServerInit 方法不执行了
+
+* 由于后台设置的cookie在前端不可以读取，所以，需要前端手动存取cookie  login.vue 存取 rememberMe
+
+* Plugins/axios.js  添加$axios.defaults['withCredentials'] = true;  请求接口携带cookie过去给后台
+
+* 跳转路由的时候都需要走一次权限验证. middleware/spa.js 
+
+* 退出登录的时候，要清除cookie  rememberMe
+
+  
 
