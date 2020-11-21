@@ -24,7 +24,10 @@ var buttonCounter2 =  {
         addCount(){
             this.count = this.count + this.addNum;
             //父子组件通信
-            this.$emit('change-total',this.addNum);   //注意，这里不能用驼峰方式
+            this.$emit('change-total',{
+                total:this.count,
+                addNum:3
+            });   //注意，这里不能用驼峰方式
         },
     },
     mounted() {

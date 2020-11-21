@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="./js/vue.js"></script>
+<!--    <script src="./js/component.js"></script>-->
+    <style>
+        .active{
+            background: antiquewhite;
+        }
+        .text-danger{
+            color: red;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <div id="example-5">
+            <select v-model="selected">
+                <option disabled value="">请选择</option>
+                <option value="1">A</option>
+                <option value="2">B</option>
+                <option value="3">C</option>
+            </select>
+            <span>Selected: {{ selected }}</span>
+        </div>
+        <input v-model.lazy="msg">
+    </div>
+<script>
+    var vm = new Vue({
+        el: '#app',
+        data: function () {
+            return {
+                selected:'',
+                picked:'One',
+                msg:''
+            }
+        },
+        methods: {
+            showValue(){
+                console.log('输入')
+            },
+            doThis(){
+                console.log(111)
+            },
+            doThis2(){
+                console.log(222)
+            },
+            onSubmit(){
+                console.log(333)
+            },
+            isSelfHandle(){
+                console.log(444)
+            },
+            add:function(n){
+                this.count = this.count + n
+            },
+            clickInput(e){
+                console.log(e)
+            },
+        },
+        mounted() {
+
+        }
+    })
+</script>
+</body>
+
+</html>

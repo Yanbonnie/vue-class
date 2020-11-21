@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="./js/vue.js"></script>
+    <title>Document</title>
+</head>
+<body>
+<div id="app">
+    <button @click="randomHandle">随机排序</button>
+    <ul>
+        <li v-for="item,index in list">
+            {{item}}
+            <span @click="e=>{e.target.parentNode.style.background='red'}">
+                    点击我变红
+                </span>
+            <button @click="remove(index)">删除</button>
+        </li>
+    </ul>
+    <hr>
+    <ul>
+        <li v-for="item,index in list" :key="item">
+            {{item}}
+            <span @click="e=>{e.target.parentNode.style.background='red'}">
+                    点击我变红
+                </span>
+            <button @click="remove(index)">删除</button>
+        </li>
+    </ul>
+
+</div>
+<script>
+    // 如果不使用key  数据发生变化的时候，不会把li移除重新生成，而是复用已有的结构
+    // key值最好不要使用index ，使用唯一的值id
+    // console.log是异步输出
+    var vm = new Vue({
+        el:'#app',
+        data:{
+            list:['a','b','c']
+        },
+        methods: {
+            remove(index){
+                this.list.splice(index,1);
+            },
+            randomHandle(){
+                this.list.sort(()=>Math.random()-0.5)
+            }
+        },
+    })
+
+</script>
+</body>
+</html>

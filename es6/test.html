@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="./jquery.min.js"></script>
+
+    <title>Title</title>
+    <script>
+        $(function(){
+            let nodeList = document.querySelectorAll('li');
+            let nodeList2 = [...document.querySelectorAll('li')];
+            console.log(Array.from(nodeList))
+            console.log(nodeList2)
+
+        })
+    </script>
+</head>
+<body>
+    <ul>
+        <li>1</li>
+        <li>2</li>
+        <li>3</li>
+    </ul>
+</body>
+</html>

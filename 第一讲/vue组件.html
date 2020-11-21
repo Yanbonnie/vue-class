@@ -18,27 +18,39 @@
 
 <body>
     <div id="app">
-        <div v-bind:style="[baseStyles, overridingStyles]">内联样式绑定</div>
-        {{total}}
-        <!-- <div>
-            <button-counter @change-total="addTotal" :add-num="10" >
-                <h3 >我是要进入插槽的内容</h3>
-                <div slot="other">
-                    <p>我是有名字的插槽</p>
-                </div>
-            </button-counter>
-        </div> -->
-
-        <button-counter2 :add-num="10" @change-total="addTotal"/>  
+<!--        {{total}}-->
+<!--        <div>-->
+<!--            <button-counter @change-total="addTotal" :add-num="addNum" >-->
+<!--                <h3>我是默认插槽的内容</h3>-->
+<!--                <div slot="other" style="background:#ccc;">-->
+<!--                    <p>我是有名字的插槽</p>-->
+<!--                </div>-->
+<!--            </button-counter>-->
+<!--        </div>-->
+<!--        <p>-&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;</p>-->
+<!--        <div>-->
+<!--            {{total3}}-->
+<!--            <button-counter @change-total="addTotal3" :add-num="5" >-->
+<!--&lt;!&ndash;                <h3 >我是默认插槽的内容</h3>&ndash;&gt;-->
+<!--&lt;!&ndash;                <div slot="other" style="background:#ccc;">&ndash;&gt;-->
+<!--&lt;!&ndash;                    <p>我是有名字的插槽</p>&ndash;&gt;-->
+<!--&lt;!&ndash;                </div>&ndash;&gt;-->
+<!--            </button-counter>-->
+<!--        </div>-->
+<!--        <p>-&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;</p>-->
+<!--        {{total2}}-->
+        <button-counter2 :add-num="3" @change-total="addTotal2"/>
     </div>
    
     <script>
-         console.log(buttonCounter2)
         var vm = new Vue({
             el: '#app',
             data: function () {
                 return {
+                    addNum:10,
                     total: 0,
+                    total2:0,
+                    total3:0,
                     baseStyles:{
                         'color':"red"
                     },
@@ -49,16 +61,24 @@
             },
             methods: {
                 addTotal(value) {
-                    this.total = this.total + value
+                    console.log(value)
+                    this.addNum = value.addNum;
+                    this.total = value.total
+                },
+                addTotal2(value){
+                    this.total2 = value.total;
+                },
+                addTotal3(value){
+                    this.total3 = value.total;
                 }
             },
             components:{
                 'button-counter2': buttonCounter2
             },
             mounted() {
-                // eventBus.$on('parent-change', function (value) {
-                //     console.log(value)
-                // })
+                eventBus.$on('parent-change', function (value) {
+                    console.log(value)
+                })
             }
         })
     </script>

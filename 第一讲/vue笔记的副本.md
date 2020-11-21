@@ -1,3 +1,5 @@
+
+
 # VUE介绍
 
 Vue是一套用于构建用户界面的渐进式框架，Vue 的核心库只关注视图层  [官方网站](https://cn.vuejs.org/)
@@ -408,26 +410,6 @@ var vm = new Vue({
 <input v-model.trim="msg">
 ```
 
-### 对象的响应式数据变化
-
-```
-vm.$el(target,prop,value)
-
-```
-
-### 数组的响应式数据变化
-
-```
-vue提供了观察数组变异的方法，使用这些方法将会触发试图更新
-push()  pop()  shift()  unshift()  splice()  sort()  reverse()
-
-不能触发试图更新
-1.利用索引直接设置一个项时
-2.修改数组长度时
-```
-
-
-
 ### vue组件
 
 #### count组件
@@ -502,14 +484,8 @@ Vue.component('button-counter', {
         addCount(){
             this.count = this.count + this.addNum;
             //父子组件通信
-            this.$emit('change-total',{  //注意，这里不能用驼峰方式
-                total:this.count,
-                addNum:3
-            });   
-            eventBus.$emit('parent-change',{
-                total:this.count,
-                addNum:3
-            })
+            this.$emit('change-total',this.addNum);   //注意，这里不能用驼峰方式
+            eventBus.$emit('parent-change',this.addNum)
         },
     },
     mounted() {
@@ -578,14 +554,8 @@ Vue.component('button-counter', {
         addCount(){
             this.count = this.count + this.addNum;
             //父子组件通信
-            this.$emit('change-total',{
-                total:this.count,
-                addNum:3
-            });   //注意，这里不能用驼峰方式
-            eventBus.$emit('parent-change',{
-                total:this.count,
-                addNum:3
-            })
+            this.$emit('change-total',this.addNum);   //注意，这里不能用驼峰方式
+            eventBus.$emit('parent-change',this.addNum)
         },
     },
     mounted() {
@@ -654,10 +624,7 @@ var buttonCounter2 =  {
         addCount(){
             this.count = this.count + this.addNum;
             //父子组件通信
-            this.$emit('change-total',{
-                total:this.count,
-                addNum:3
-            });   //注意，这里不能用驼峰方式
+            this.$emit('change-total',this.addNum);   //注意，这里不能用驼峰方式
         },
     },
     mounted() {

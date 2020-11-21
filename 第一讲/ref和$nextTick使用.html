@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="./js/vue.js"></script>
+    <title>Document</title>
+</head>
+<body>
+<div id="app">
+    <button @click="getFocus">获取焦点</button>{{m}}
+    <input type="text" ref='edit' v-show="show">
+</div>
+<script>
+    /*
+
+        【1】vue中不提倡操作DOM,但是，有时候不得不操作DOM，比如
+
+            1.input focus
+            2.动画
+
+        【2】操作dom推荐的方式（$refs）
+            ref 定义在行间属性中，类似id一样
+            找元素通过实例的refs去找
+
+            如果res是用在v-for上，$refs中会存的是一个数组
+            ref = 'ketang'
+
+            {
+                ketang:[li,li,li,...]
+            }
+
+            this.refs.ketang[index]  -- index下标
+
+
+        【3】数据更新，元素操作要使用$nextTick方式
+
+
+
+
+    */
+    var vm = new Vue({
+        el:'#app',
+        data:{
+            m:"112",
+            show:false,
+        },
+        methods: {
+            getFocus(){
+
+                //不是设置一个更新一条，而是设置完毕一次更新
+                //异步更新
+
+                // this.m = '我修改了';
+                // this.show = true;
+                // this.$refs.edit.focus();
+
+
+                //数据更新完了再操作dom
+                this.m = '我修改了';
+                this.show = true;
+                this.$nextTick(()=>{
+                    this.$refs.edit.focus();
+                })
+
+            }
+        }
+    })
+    console.log(Vue)
+</script>
+</body>
+</html>

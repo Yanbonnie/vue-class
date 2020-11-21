@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="./js/vue.js"></script>
+</head>
+
+<body>
+<div id="app">
+    <p>{{msg}}</p>
+    <p>{{gzl.name}}</p>
+</div>
+<script>
+    var vm = new Vue({
+        el: '#app',
+        data: function () {
+            return {
+                msg:'hello',
+                gzl:{}
+            }
+        },
+        methods: {
+
+        },
+        mounted() {
+        }
+    })
+    //这样改是不可以的
+    // vm.gzl.name = '广之旅';
+    // vm.$set(target,prop,value)
+
+    //这样改可以实现响应式
+    vm.$set(vm.gzl,'name','广之旅')
+
+    //Vue.set(vm.gzl,'name','广之旅')
+
+    console.log(vm.gzl)
+</script>
+</body>
+
+</html>

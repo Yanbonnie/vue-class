@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="./js/vue.js"></script>
+    <title>Document</title>
+</head>
+<body>
+<div id="app">
+    <ul>
+        <li v-for="(item,index) in list" :key="index">
+            <input type="checkbox" v-model="item.select">{{item.title}}
+        </li>
+    </ul>
+    <input type="checkbox" v-model="selectAll"> 全选
+</div>
+<script>
+    var vm = new Vue({
+        el:'#app',
+        data:{
+            list:[
+                {
+                    title:'javascript',
+                    select:false
+                },
+                {
+                    title:'java',
+                    select:false
+                }
+            ]
+        },
+        methods: {
+
+        },
+        computed: {
+            //只获取值
+            /*selectAll(){
+                return  this.list.every(item=>item.select)
+            },*/
+            //获取值和设置值
+            selectAll:{
+                get(){
+                    return this.list.every(item=>item.select)
+                },
+                set(newValue){
+                    console.log(newValue)
+                    this.list.forEach(item => {
+                        item.select = newValue
+                    });
+                }
+            }
+        },
+    })
+</script>
+</body>
+</html>

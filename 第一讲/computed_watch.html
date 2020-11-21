@@ -6,36 +6,90 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>购物车</title>
-    <script src="./js/vue.js"></script>
+    <link rel="stylesheet" href="./css/lib/element-ui/index.css">
     <style>
-        body {
-            padding:50px; 
-            background-color: white;
+        [v-cloak]{
+            display:none;
         }
     </style>
 </head>
 
 <body>
-    <div id="app">
-        <ul>
-            <li v-for="item in list">{{item.name}}(¥{{item.price}})
-                <button @click="addCard(item)">加入购物车</button>
-            </li>
-        </ul>
+    <div id="app" v-cloak>
+        <h2>产品列表</h2>
+        <el-table
+                size="mini"
+                :data="list"
+                style="width: 100%">
+            <el-table-column
+                    prop="name"
+                    label="名称"
+                    width="180">
+            </el-table-column>
+            <el-table-column
+                    prop="price"
+                    label="单价"
+                    width="180">
+            </el-table-column>
+            <el-table-column
+                    label="操作">
+                <template slot-scope="scope">
+                    <el-button
+                            size="mini"
+                            type="success"
+                            @click="addCard(scope.row)">添加到购物车</el-button>
+                </template>
+            </el-table-column>
+        </el-table>
 
-        <br>
         <h2>购物车</h2>
-        <ul v-if="cartList.length > 0 ">
-            <li v-for="item in cartList">
-                {{item.name}} 单价：(¥{{item.price}}) 数量：{{item.count}} 
-                <button @click="operCart('reduce',item)"> 减</button>
-                <button @click="operCart('add',item)">加</button>
-            </li>
-            <div>
-                总价：{{total}}
-            </div>
-        </ul>
+        <el-table
+                size="mini"
+                :data="cartList"
+                empty-text="购物车空空如也～～"
+                style="width: 100%">
+            <el-table-column
+                    width="80">
+                <template slot="header" slot-scope="scope">
+                    <input type="checkbox" v-model="checkAll">
+                </template>
+                <template slot-scope="scope">
+                    <input type="checkbox" v-model="scope.row.check">
+                </template>
+            </el-table-column>
+            <el-table-column
+                    prop="name"
+                    label="名称"
+                    width="100">
+            </el-table-column>
+            <el-table-column
+                    prop="price"
+                    label="单价"
+                    width="80">
+            </el-table-column>
+            <el-table-column
+                    prop="count"
+                    label="数量"
+                    width="80">
+            </el-table-column>
+            <el-table-column
+                    label="操作">
+                <template slot-scope="scope">
+                    <el-button
+                            size="mini"
+                            @click="operCart('reduce',scope.row)">减</el-button>
+                    <el-button
+                            size="mini"
+                            type="danger"
+                            @click="operCart('add',scope.row)">加</el-button>
+                </template>
+            </el-table-column>
+        </el-table>
+        <p>总价：{{total}}</p>
     </div>
+    <script src="./js/vue.js"></script>
+    <script src="./js/lib/element-ui/index.js"></script>
+
     <script>
         var vm = new Vue({
             el: '#app',
@@ -49,28 +103,48 @@
                         id:2,
                         name:'java',
                         price:100
+                    },{
+                        id:3,
+                        name:'c++',
+                        price:90
                     }],
                     cartList:[],
                     total:0
                 }
             },
-            // computed:{
-            //     total(){
-            //         let { cartList } = this;
-            //         let total  = 0;
-            //         cartList.forEach(item => {
-            //             total = total + (item.price * item.count)
-            //         });
-            //         return total
-            //     }
-            // },
+            computed:{
+                // total(){
+                //     let { cartList } = this;
+                //     let total  = 0;
+                //     cartList.forEach(item => {
+                //         if(item.check){
+                //             total = total + (item.price * item.count)
+                //         }
+                //     });
+                //     return total
+                // },
+                //获取值和设置值
+                checkAll:{
+                    get(){
+                        return this.cartList.length > 0 && this.cartList.every(item=>item.check)
+                    },
+                    set(newValue){
+                        this.cartList.forEach(item => {
+                            item.check = newValue
+                        });
+                    }
+                }
+            },
             watch:{
                 cartList:{
                     handler(newVal,oldVal){
                         let cartList  = newVal;
                         let total  = 0;
                         cartList.forEach(item => {
-                            total = total + (item.price * item.count)
+                            if(item.check){
+                                total = total + (item.price * item.count)
+                            }
+
                         });
                         this.total = total
                     },
@@ -89,6 +163,7 @@
                     }else{
                         cartList.push({
                             count:1,
+                            check:false,
                             ...item
                         })
                     }

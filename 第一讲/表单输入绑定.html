@@ -14,11 +14,14 @@
         .title {
             background-color: #ccc;
         }
+        [v-cloak]{
+            display: none;
+        }
     </style>
 </head>
 
 <body>
-    <div id="app">
+    <div id="app" v-cloak>
         <p class="title">单行文本</p>
         <input v-model="message" placeholder="edit me">
         <p>Message is: {{ message }}</p>

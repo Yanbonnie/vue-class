@@ -24,15 +24,21 @@ Vue.component('button-counter', {
         <button @click="addCount">You clicked me {{ addNum }} times.</button>
         <slot name="other"></slot>
         <slot></slot>
-        <button-child :count="count"/>
+<!--        <button-child :count="count"/>-->
     </div>
     `,
     methods:{
         addCount(){
             this.count = this.count + this.addNum;
             //父子组件通信
-            this.$emit('change-total',this.addNum);   //注意，这里不能用驼峰方式
-            eventBus.$emit('parent-change',this.addNum)
+            this.$emit('change-total',{
+                total:this.count,
+                addNum:3
+            });   //注意，这里不能用驼峰方式
+            eventBus.$emit('parent-change',{
+                total:this.count,
+                addNum:3
+            })
         },
     },
     mounted() {

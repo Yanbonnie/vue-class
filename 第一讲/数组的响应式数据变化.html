@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="./js/vue.js"></script>
+</head>
+
+<body>
+<div id="app">
+    <p>{{list}}</p>
+</div>
+<script>
+    var vm = new Vue({
+        el: '#app',
+        data: function () {
+            return {
+                list:[1,2,3]
+            }
+        },
+        methods: {
+
+        },
+        mounted() {
+        }
+    })
+
+    //这种方式不能触发试图更新
+    // vm.list[0] = 'a';
+    vm.list.push('4')
+    // vm.list.splice(0,1,'a')
+
+
+
+    //这种方式不能触发试图更新
+    // vm.list.length = 1;
+
+
+    // var arr = [1,2,3]
+    // arr.length = 1;
+    // console.log(arr)
+</script>
+</body>
+
+</html>

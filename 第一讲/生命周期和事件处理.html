@@ -12,9 +12,9 @@
 <body>
     <div id="app">
         <div>{{count}}</div>
-        <div style="padding:10px;background:red;" @click.self="isSelfHandle">
-            <p>11111111111</p>
-        </div>
+<!--        <div style="padding:10px;background:red;" @click.self="isSelfHandle">-->
+<!--            <p>11111111111</p>-->
+<!--        </div>-->
         <button v-on:click="add">加1</button>
         <input type="text" @keydown.enter="keyboardHandle">
     </div>
@@ -24,19 +24,13 @@
             el: '#app',
             data: function () {
                 return {
-                    count: 1,
-                    a: 1,
-                    object: {
-                        title: 'How to do lists in Vue',
-                        author: 'Jane Doe',
-                        publishedAt: '2016-04-10'
-                    }
+                    count: 1
                 }
             },
             methods: {
                 add: function (e) {
                     console.log(e)
-                    this.count ++
+                    this.count = this.count+1
                 },
                 isSelfHandle:function(){
                     console.log("是自己")
@@ -47,29 +41,31 @@
             },
             //在实例初始化之后，数据观测 (data observer) 和 event/watcher 事件配置之前被调用。
             beforeCreate: function () {
+                console.log(this.data)
                 console.log("beforeCreate:", this.a)
             },
             //在实例创建完成后被立即调用。在这一步，实例已完成以下的配置：数据观测 (data observer)，属性和方法的运算，watch/event 事件回调。
             //然而，挂载阶段还没开始，$el 属性目前不可见。
             created: function () {
-                console.log(this)
-                console.log("created:", this.a)
+                console.log("created:", this.count,this.$el)
             },
             //在挂载开始之前被调用
             beforeMount: function () {
-                console.log("beforeMount:")
+                console.log("beforeMount:",this.$el)
+                // this.$el.style.background='red'
             },
             //在挂载完成被调用，此时可以访问$el
             mounted: function () {
-                console.log("mounted:")
+                console.log("mounted:",this.$el)
+                this.$el.style.background='red'
             },
             //数据更新之前
             beforeUpdate: function () {
-                console.log(this.a)
+                console.log('数据更新之前')
             },
             //数据更新完成
             updated: function () {
-                console.log("更新完成")
+                console.log("更新完成",this.count)
             }
         })
     </script>

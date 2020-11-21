@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="./js/vue.js"></script>
+    <title>Document</title>
+</head>
+<body>
+<div id="app">
+    <button @click="m=123">监听m变化</button>{{'m:'+m}}
+    <br>
+    <button @click="obj.a.b=123">监听obj变化</button>{{'obj.a.b:'+obj.a.b}}
+</div>
+<script>
+    var vm = new Vue({
+        el:'#app',
+        data:{
+            m:'hello',
+            obj:{
+                a:{
+                    b:111
+                }
+            }
+        },
+        watch: {
+            m(newValue,oldValue){
+                console.log('改变了m',newValue,oldValue)
+            },
+            'obj.a.b'(newValue,oldValue){
+                console.log("改变了obj.a.b",newValue,oldValue)
+            },
+            //就想监控obj
+            'obj':{
+                deep:true,
+                handler(newValue,oldValue){
+                    console.log('改变了obj')
+                    console.log(newValue)  //obj.a.b 123  对象是引用类型
+                    console.log(oldValue)  //obj.a.b 123  对象是引用类型
+                },
+                immediate:true,   //watch就是监听的数据变化才会执行，immediate就是上来就会执行一次
+            }
+        },
+
+    })
+</script>
+</body>
+</html>
